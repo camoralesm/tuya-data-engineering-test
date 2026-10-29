@@ -1,0 +1,39 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# SQLite databases & journals
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Test & coverage artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# OS / Editor files
+.DS_Store
+ThumbsUp.db
+.vscode/
+.idea/
+
+# Temporary output files from HTML processor demos
+html_processor/sample_output/
+
+# Original statement PDF in local workspace
+*.pdf
+
+
