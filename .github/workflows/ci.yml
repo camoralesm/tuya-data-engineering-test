@@ -1,0 +1,54 @@
+name: Tuya Data Engineering CI Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  quality-and-tests:
+    name: Data Quality, SQL Validation & Python Unit Tests
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: 1. Static Syntax & Bytecode Compilation Check
+        run: |
+          python3 -m py_compile \
+            sql_rachas/01_etl_ingest_sqlite.py \
+            sql_rachas/04_run_and_validate.py \
+            html_processor/src/__init__.py \
+            html_processor/src/processor.py \
+            html_processor/src/cli.py \
+            html_processor/tests/test_processor.py
+
+      - name: 2. Verify Documentation & Architecture Deliverables (Exercises 1 & 2)
+        run: |
+          test -s docs/01_arquitectura_cicd_telefonos.md
+          test -s docs/02_gobierno_calidad_kpis.md
+          test -s README.md
+
+      - name: 3. Execute ETL, Data Quality Audit & SQL vs Python Oracle Suite (Exercise 3)
+        run: |
+          python3 sql_rachas/04_run_and_validate.py --fecha-base 2024-12-31 --min-racha 3 --top 15
+
+      - name: 4. Run HTML Processor Unit & Integration Tests (Exercise 4)
+        run: |
+          python3 -m unittest discover -s html_processor/tests -v
+
+      - name: 5. Run HTML Processor CLI End-to-End Smoke Test (Exercise 4)
+        run: |
+          python3 html_processor/src/cli.py --demo

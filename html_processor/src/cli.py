@@ -30,52 +30,65 @@ _TINY_PNG_BYTES = base64.b64decode(
 )
 
 
-def run_demo() -> int:
+def run_demo(target_dir: Optional[Path] = None) -> int:
     """
-    Ejecuta una demostración autocontenida en un directorio temporal con subdirectorios,
-    imágenes válidas (PNG, SVG) e imágenes rotas/inexistentes, mostrando el JSON resultante.
+    Ejecuta una demostración autocontenida generando archivos HTML originales y
+    sus versiones con imágenes incrustadas en Base64 (.b64.html) dentro de
+    `html_processor/sample_output/`, mostrando el JSON resultante.
     """
-    with tempfile.TemporaryDirectory(prefix="tuya_html_demo_") as tmp_dir:
-        root = Path(tmp_dir)
-        assets = root / "assets"
-        sub = root / "sub_pages"
-        assets.mkdir(parents=True, exist_ok=True)
-        sub.mkdir(parents=True, exist_ok=True)
+    root = (
+        target_dir.resolve()
+        if target_dir is not None
+        else (Path(__file__).resolve().parents[1] / "sample_output")
+    )
+    assets = root / "assets"
+    sub = root / "sub_pages"
+    assets.mkdir(parents=True, exist_ok=True)
+    sub.mkdir(parents=True, exist_ok=True)
 
-        png_path = assets / "logo_tuya.png"
-        png_path.write_bytes(_TINY_PNG_BYTES)
+    png_path = assets / "logo_tuya.png"
+    png_path.write_bytes(_TINY_PNG_BYTES)
 
-        svg_path = assets / "icon.svg"
-        svg_path.write_text(
-            '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10">'
-            '<circle cx="5" cy="5" r="4" fill="red"/></svg>',
-            encoding="utf-8",
-        )
+    svg_path = assets / "icon.svg"
+    svg_path.write_text(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="120" height="40">'
+        '<rect width="120" height="40" rx="8" fill="#E30613"/>'
+        '<text x="60" y="25" font-family="Arial" font-size="16" font-weight="bold" '
+        'fill="#FFFFFF" text-anchor="middle">TUYA S.A.</text></svg>',
+        encoding="utf-8",
+    )
 
-        html_main = root / "index.html"
-        html_main.write_text(
-            "<!DOCTYPE html>\n"
-            "<html><body>\n"
-            '  <h1>Portal Tuya</h1>\n'
-            '  <img src="assets/logo_tuya.png" alt="Logo Tuya">\n'
-            '  <img src="assets/missing_banner.jpg" alt="Banner Faltante">\n'
-            "</body></html>\n",
-            encoding="utf-8",
-        )
+    html_main = root / "index.html"
+    html_main.write_text(
+        "<!DOCTYPE html>\n"
+        '<html lang="es"><head><meta charset="utf-8"><title>Demo Tuya Base64</title></head>\n'
+        '<body style="font-family: sans-serif; padding: 24px;">\n'
+        "  <h1>Portal Tuya - Prueba de Imágenes Base64</h1>\n"
+        '  <p>1. Imagen PNG convertida exitosamente a Base64:</p>\n'
+        '  <img src="assets/logo_tuya.png" alt="Logo Tuya PNG" width="48" height="48" style="border:1px solid #ccc;">\n'
+        '  <p>2. Imagen rota (reportada en fail sin detener el proceso):</p>\n'
+        '  <img src="assets/missing_banner.jpg" alt="Banner Faltante">\n'
+        '  <p><a href="sub_pages/detalle.b64.html">Ver subpágina con SVG en Base64</a></p>\n'
+        "</body></html>\n",
+        encoding="utf-8",
+    )
 
-        html_sub = sub / "detalle.html"
-        html_sub.write_text(
-            "<!DOCTYPE html>\n"
-            "<html><body>\n"
-            '  <img src="../assets/icon.svg" class="icon" />\n'
-            "</body></html>\n",
-            encoding="utf-8",
-        )
+    html_sub = sub / "detalle.html"
+    html_sub.write_text(
+        "<!DOCTYPE html>\n"
+        '<html lang="es"><head><meta charset="utf-8"><title>Detalle SVG Base64</title></head>\n'
+        '<body style="font-family: sans-serif; padding: 24px;">\n'
+        "  <h2>Subpágina con Icono SVG incrustado en Base64</h2>\n"
+        '  <img src="../assets/icon.svg" class="icon" />\n'
+        '  <p><a href="../index.b64.html">Volver al inicio</a></p>\n'
+        "</body></html>\n",
+        encoding="utf-8",
+    )
 
-        processor = HtmlImageProcessor(output_suffix=".b64.html")
-        report = processor.process([root])
+    processor = HtmlImageProcessor(output_suffix=".b64.html")
+    report = processor.process([root])
 
-        print(json.dumps(report, indent=2, ensure_ascii=False))
+    print(json.dumps(report, indent=2, ensure_ascii=False))
     return 0
 
 

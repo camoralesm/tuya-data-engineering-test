@@ -236,6 +236,87 @@ def run_validation_suite(db_path: Path) -> None:
         )
 
 
+def validar_fecha_base(fecha_str: str) -> str:
+    """
+    Valida que la fecha ingresada cumpla el formato estricto YYYY-MM-DD y sea una
+    fecha calendario válida. Lanza ValueError si no es válida.
+    """
+    limpia = (fecha_str or "").strip()
+    try:
+        fecha_dt = dt.date.fromisoformat(limpia)
+        return fecha_dt.isoformat()
+    except ValueError as exc:
+        raise ValueError(
+            f"Fecha inválida '{fecha_str}'. Debe ingresarse en formato YYYY-MM-DD (ej. 2024-06-30)."
+        ) from exc
+
+
+def solicitar_fecha_base() -> str:
+    """
+    Solicita interactivamente por consola la `fecha_base` al usuario, validando su formato
+    sin tomar una fecha por defecto silenciosamente.
+    """
+    while True:
+        entrada = input(
+            "\nIngrese la fecha base de corte en formato YYYY-MM-DD (ej. 2024-06-30): "
+        ).strip()
+        try:
+            return validar_fecha_base(entrada)
+        except ValueError as err:
+            print(f"  [!] Error: {err}")
+
+
+def solicitar_min_racha() -> int:
+    """
+    Solicita interactivamente por consola el número mínimo de meses consecutivos `n`.
+    """
+    while True:
+        entrada = input(
+            "Ingrese el número mínimo de meses consecutivos de la racha (n >= 1, ej. 3): "
+        ).strip()
+        try:
+            valor = int(entrada)
+            if valor < 1:
+                raise ValueError
+            return valor
+        except ValueError:
+            print("  [!] Error: Debe ingresar un número entero mayor o igual a 1.")
+
+
+def consultar_rachas_por_fecha(
+    fecha_base: str,
+    min_racha_n: int = 3,
+    top_k: int = 25,
+    db_path: Path = DEFAULT_DB_PATH,
+    mostrar_resumen: bool = True,
+) -> List[Tuple[str, int, str, str]]:
+    """
+    Método principal que recibe explícitamente una `fecha_base` (obligatoria, sin valor
+    por defecto), valida su formato, ejecuta la consulta SQL sobre SQLite y retorna las rachas.
+    """
+    fecha_validada = validar_fecha_base(fecha_base)
+    if min_racha_n < 1:
+        raise ValueError(f"El parámetro min_racha_n debe ser >= 1 (recibido: {min_racha_n}).")
+
+    if not db_path.exists():
+        etl_mod = _load_etl_module()
+        etl_mod.run_etl(db_path=db_path)
+
+    results = execute_sql_rachas(
+        db_path=db_path,
+        fecha_base=fecha_validada,
+        min_racha_n=min_racha_n,
+    )
+    if mostrar_resumen:
+        print_results_summary(
+            results,
+            fecha_base=fecha_validada,
+            min_racha_n=min_racha_n,
+            top_k=top_k,
+        )
+    return results
+
+
 def print_results_summary(
     results: List[Tuple[str, int, str, str]],
     fecha_base: str,
@@ -266,19 +347,19 @@ def print_results_summary(
 
 def main(argv: Optional[List[str]] = None) -> int:
     parser = argparse.ArgumentParser(
-        description="Ejecuta el ETL, la consulta SQL de rachas y la suite de validación."
+        description="Ejecuta el ETL, la suite de validación y consulta las rachas para una fecha ingresada."
     )
     parser.add_argument(
         "--fecha-base",
-        default="2024-12-31",
-        help="Fecha de corte base en formato YYYY-MM-DD (default: 2024-12-31)",
+        default=None,
+        help="Fecha de corte base en formato YYYY-MM-DD. Si se omite, se solicitará interactivamente.",
     )
     parser.add_argument(
         "-n",
         "--min-racha",
         type=int,
-        default=3,
-        help="Número mínimo de meses consecutivos (default: 3)",
+        default=None,
+        help="Número mínimo de meses consecutivos (n >= 1). Si se omite, se solicitará interactivamente.",
     )
     parser.add_argument(
         "--top",
@@ -286,23 +367,36 @@ def main(argv: Optional[List[str]] = None) -> int:
         default=25,
         help="Cantidad de registros a mostrar en el resumen en consola (default: 25)",
     )
+    parser.add_argument(
+        "--skip-validation",
+        action="store_true",
+        help="Omite la suite de validación previa y ejecuta directamente la consulta con la fecha ingresada.",
+    )
     args = parser.parse_args(argv)
 
     etl_mod = _load_etl_module()
     etl_mod.run_etl(db_path=DEFAULT_DB_PATH)
 
-    run_validation_suite(DEFAULT_DB_PATH)
+    if not args.skip_validation:
+        run_validation_suite(DEFAULT_DB_PATH)
 
-    results = execute_sql_rachas(
-        DEFAULT_DB_PATH,
-        fecha_base=args.fecha_base,
-        min_racha_n=args.min_racha,
+    fecha_base = (
+        validar_fecha_base(args.fecha_base)
+        if args.fecha_base is not None
+        else solicitar_fecha_base()
     )
-    print_results_summary(
-        results,
-        fecha_base=args.fecha_base,
-        min_racha_n=args.min_racha,
+    min_racha = (
+        args.min_racha
+        if args.min_racha is not None
+        else solicitar_min_racha()
+    )
+
+    consultar_rachas_por_fecha(
+        fecha_base=fecha_base,
+        min_racha_n=min_racha,
         top_k=args.top,
+        db_path=DEFAULT_DB_PATH,
+        mostrar_resumen=True,
     )
     return 0
 
