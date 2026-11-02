@@ -52,3 +52,4 @@ jobs:
       - name: 5. Run HTML Processor CLI End-to-End Smoke Test (Exercise 4)
         run: |
           python3 html_processor/src/cli.py --demo
+
