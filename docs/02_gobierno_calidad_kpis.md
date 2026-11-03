@@ -1,5 +1,7 @@
 # 2. Gobierno, Observabilidad, Trazabilidad y KPIs de Calidad del Dataset de Teléfonos
 
+**Autor:** Carlos Andrés Morales Machuca
+
 ## 2.1. Visión General del Mecanismo de Veeduría
 
 Construir el *Golden Dataset* de teléfonos (`dim_customer_phones_golden`) es solo la mitad del reto; para que los equipos de negocio de **Tuya S.A.** (Cobranzas, Servicio al Cliente, Riesgo/Fraude, Mercadeo y Cumplimiento) confíen en él y optimicen sus operaciones, se requiere un **ecosistema integral de Gobierno de Datos, Observabilidad Activa y Autoservicio de KPIs**.

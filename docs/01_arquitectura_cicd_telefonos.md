@@ -1,5 +1,7 @@
 # 1. Arquitectura y Proceso CI/CD para la Creación del Dataset Confiable de Números de Teléfono de Clientes
 
+**Autor:** Carlos Andrés Morales Machuca
+
 ## 1.1. Resumen Ejecutivo y Objetivo de Negocio
 
 En una entidad financiera como **Tuya S.A.**, el número de teléfono del cliente es un activo crítico para la operación omnicanal: cobranzas preventivas, alertas transaccionales (OTP/fraude), campañas comerciales, servicio al cliente (Contact Center / WhatsApp) y notificaciones legales (Ley 2300 de 2023 - "Dejen de Fregar" y Habeas Data Ley 1581 de 2012 en Colombia).

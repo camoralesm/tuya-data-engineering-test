@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 """
+Prueba Técnica de Ingeniería de Datos - Tuya S.A.
+Autor: Carlos Andrés Morales Machuca
+
 Orquestador y Suite de Validación End-to-End para el Ejercicio 3 (Rachas en SQL).
 
 Ejecuta el pipeline ETL (`01_etl_ingest_sqlite.py`), corre la consulta analítica

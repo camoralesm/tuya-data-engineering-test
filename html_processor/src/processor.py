@@ -1,4 +1,7 @@
 """
+Prueba Técnica de Ingeniería de Datos - Tuya S.A.
+Autor: Carlos Andrés Morales Machuca
+
 Motor orientado a objetos para descubrimiento de archivos HTML, extracción de etiquetas `<img>`,
 codificación de imágenes a Data URI Base64 y generación no destructiva de documentos HTML.
 

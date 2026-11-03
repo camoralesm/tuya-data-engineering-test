@@ -1,5 +1,6 @@
 -- ============================================================================
 -- PRUEBA TÉCNICA INGENIERÍA DE DATOS - TUYA S.A.
+-- Autor: Carlos Andrés Morales Machuca
 -- Archivo: 02_ddl_schema.sql
 -- Descripción: Definición de esquema relacional (DDL) en SQLite para el motor
 --              de cálculo de rachas de saldos de clientes y auditoría de

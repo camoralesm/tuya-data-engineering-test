@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 """
+Prueba Técnica de Ingeniería de Datos - Tuya S.A.
+Autor: Carlos Andrés Morales Machuca
+
 ETL e Ingesta con Control de Calidad de Datos (Data Quality) para Ejercicio 3 (Rachas).
 
 Lee el archivo Excel `sql_rachas/data/Rachas.xlsx` sin depender de librerías externas

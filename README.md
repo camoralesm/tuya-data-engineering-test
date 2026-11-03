@@ -1,5 +1,7 @@
 # Prueba Técnica de Ingeniería de Datos — Tuya S.A.
 
+**Autor:** Carlos Andrés Morales Machuca
+
 Este repositorio contiene la solución integral de **Ingeniería de Datos** para la prueba técnica de **Tuya S.A.**, abarcando arquitectura DataOps y CI/CD, gobierno y observabilidad de datos (KPIs), procesamiento analítico avanzado en SQL (*Gaps and Islands* con control de calidad de datos sobre `Rachas.xlsx`) y procesamiento orientado a objetos de archivos HTML en Python utilizando exclusivamente la librería estándar (*Python Standard Library*).
 
 ---

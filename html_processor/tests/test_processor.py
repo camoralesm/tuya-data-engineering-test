@@ -1,4 +1,7 @@
 """
+Prueba Técnica de Ingeniería de Datos - Tuya S.A.
+Autor: Carlos Andrés Morales Machuca
+
 Suite de pruebas unitarias y de integración para `html_processor` (Ejercicio 4).
 Utiliza exclusivamente la librería estándar `unittest`.
 """

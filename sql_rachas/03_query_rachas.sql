@@ -1,5 +1,6 @@
 -- ============================================================================
 -- PRUEBA TÉCNICA INGENIERÍA DE DATOS - TUYA S.A.
+-- Autor: Carlos Andrés Morales Machuca
 -- Archivo: 03_query_rachas.sql
 -- Descripción: Consulta analítica parametrizable (Time-Travel / Point-in-Time)
 --              que implementa la técnica "Gaps and Islands" mediante CTEs y

@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 """
+Prueba Técnica de Ingeniería de Datos - Tuya S.A.
+Autor: Carlos Andrés Morales Machuca
+
 Interfaz de Línea de Comandos (CLI) para `html_processor`.
 
 Permite ejecutar el procesador pasándole rutas de archivos HTML o directorios,
